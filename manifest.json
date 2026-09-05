@@ -1,0 +1,11 @@
+{
+  "name": "VIP Quotex Market Scanner",
+  "short_name": "VIP Scanner",
+  "description": "Quotex technical analysis scanner",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#080b12",
+  "theme_color": "#080b12",
+  "icons": []
+}
