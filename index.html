@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0,
+      maximum-scale=1.0,user-scalable=no">
+
+<meta name="theme-color" content="#080b12">
+<link rel="manifest" href="manifest.json">
+
+<title>VIP Market Scanner</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:
+    radial-gradient(circle at top,#202b4a,#080b12 55%);
+    color:white;
+    font-family:Arial,sans-serif;
+    min-height:100vh;
+}
+
+.container{
+    width:100%;
+    max-width:520px;
+    margin:auto;
+    padding:15px;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 3px 18px;
+}
+
+.logo{
+    font-size:21px;
+    font-weight:bold;
+}
+
+.vip{
+    background:#171f35;
+    border:1px solid #465274;
+    padding:7px 11px;
+    border-radius:20px;
+    font-size:11px;
+    color:#9db8ff;
+}
+
+.card{
+    background:rgba(17,22,34,.95);
+    border:1px solid #293249;
+    border-radius:20px;
+    padding:15px;
+    margin-bottom:14px;
+    box-shadow:0 10px 35px rgba(0,0,0,.35);
+}
+
+.title{
+    font-size:13px;
+    color:#9da8bf;
+    margin-bottom:8px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+select,input,textarea{
+    width:100%;
+    padding:13px;
+    background:#080c15;
+    border:1px solid #303a53;
+    border-radius:12px;
+    color:white;
+    font-size:14px;
+}
+
+textarea{
+    resize:none;
+    margin-top:7px;
+}
+
+.scan{
+    width:100%;
+    margin-top:12px;
+    padding:15px;
+    border:0;
+    border-radius:13px;
+    background:linear-gradient(90deg,#276fff,#735cff);
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+}
+
+.scan:active{
+    transform:scale(.98);
+}
+
+.signal{
+    text-align:center;
+    padding:22px 10px;
+    border-radius:17px;
+    background:#151b2a;
+    border:1px solid #2d3851;
+}
+
+.signal-title{
+    color:#9ca8bf;
+    font-size:12px;
+}
+
+.signal-word{
+    font-size:43px;
+    font-weight:900;
+    margin:9px 0;
+}
+
+.up{
+    color:#24e68b;
+}
+
+.down{
+    color:#ff5268;
+}
+
+.wait{
+    color:#ffd166;
+}
+
+.confidence{
+    color:#a7b0c4;
+    font-size:14px;
+}
+
+.progress{
+    width:100%;
+    height:10px;
+    background:#080c14;
+    border-radius:20px;
+    margin-top:12px;
+    overflow:hidden;
+}
+
+.progress-bar{
+    height:100%;
+    width:0%;
+    background:#5e9cff;
+    transition:.5s;
+}
+
+.reason{
+    color:#aeb7ca;
+    font-size:11px;
+    margin-top:12px;
+    line-height:1.5;
+}
+
+.indicators{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+}
+
+.indicator{
+    background:#0b101a;
+    border:1px solid #222c42;
+    border-radius:12px;
+    padding:12px;
+}
+
+.indicator small{
+    display:block;
+    color:#7f8aa1;
+    font-size:10px;
+}
+
+.indicator strong{
+    display:block;
+    font-size:17px;
+    margin-top:5px;
+}
+
+.footer{
+    text-align:center;
+    color:#68738a;
+    font-size:10px;
+    line-height:1.5;
+    padding:8px 5px 25px;
+}
+
+.online{
+    color:#25e58a;
+    font-size:11px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+
+<div class="logo">
+⚡ VIP SCANNER
+</div>
+
+<div class="vip">
+QUOTEX ONLY
+</div>
+
+</div>
+
+
+<!-- SETTINGS -->
+
+<div class="card">
+
+<div class="title">
+Trading Settings
+</div>
+
+<div class="grid">
+
+<div>
+<label class="title">Asset</label>
+
+<select id="asset">
+
+<option>EUR/USD</option>
+<option>GBP/USD</option>
+<option>USD/JPY</option>
+<option>USD/CHF</option>
+<option>AUD/USD</option>
+<option>USD/CAD</option>
+<option>EUR/GBP</option>
+<option>EUR/JPY</option>
+<option>GBP/JPY</option>
+<option>USD/PKR</option>
+<option>Gold</option>
+<option>BTC/USD</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label class="title">Timeframe</label>
+
+<select id="timeframe">
+
+<option value="5">5 Seconds</option>
+<option value="10">10 Seconds</option>
+<option value="15">15 Seconds</option>
+<option value="30">30 Seconds</option>
+<option value="60">1 Minute</option>
+<option value="300">5 Minutes</option>
+<option value="900">15 Minutes</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<div class="grid" style="margin-top:10px">
+
+<div>
+
+<label class="title">Expiry</label>
+
+<select id="expiry">
+
+<option>5 Seconds</option>
+<option>10 Seconds</option>
+<option>15 Seconds</option>
+<option>30 Seconds</option>
+<option>1 Minute</option>
+<option>2 Minutes</option>
+<option>5 Minutes</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label class="title">Price</label>
+
+<input
+id="price"
+type="number"
+step="any"
+placeholder="Current price">
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- MARKET DATA -->
+
+<div class="card">
+
+<div class="title">
+Quotex Candle Data
+</div>
+
+<div style="font-size:11px;color:#8792a8;line-height:1.5">
+
+Quotex chart کے recent closing prices یہاں
+oldest → newest ترتیب میں ڈالیں۔
+
+</div>
+
+<textarea
+id="prices"
+rows="6"
+placeholder="1.1200, 1.1210, 1.1220, 1.1215, 1.1230, 1.1240 ...">
+</textarea>
+
+<button
+class="scan"
+onclick="scanMarket()">
+
+🔎 SCAN MARKET
+
+</button>
+
+</div>
+
+
+<!-- SIGNAL -->
+
+<div class="card">
+
+<div class="signal">
+
+<div
+id="signalAsset"
+class="signal-title">
+
+Waiting for scan...
+
+</div>
+
+<div
+id="signal"
+class="signal-word wait">
+
+WAIT ⏳
+
+</div>
+
+<div
+id="confidence"
+class="confidence">
+
+Add candle data to start analysis
+
+</div>
+
+<div class="progress">
+
+<div
+id="progress"
+class="progress-bar">
+</div>
+
+</div>
+
+<div
+id="reason"
+class="reason">
+
+RSI + EMA + MACD analysis
+</div>
+
+</div>
+
+</div>
+
+
+<!-- INDICATORS -->
+
+<div class="card">
+
+<div class="title">
+Technical Analysis
+</div>
+
+<div class="indicators">
+
+<div class="indicator">
+
+<small>RSI 14</small>
+
+<strong id="rsi">
+—
+</strong>
+
+</div>
+
+
+<div class="indicator">
+
+<small>EMA 9</small>
+
+<strong id="ema9">
+—
+</strong>
+
+</div>
+
+
+<div class="indicator">
+
+<small>EMA 21</small>
+
+<strong id="ema21">
+—
+</strong>
+
+</div>
+
+
+<div class="indicator">
+
+<small>MACD</small>
+
+<strong id="macd">
+—
+</strong>
+
+</div>
+
+
+<div class="indicator">
+
+<small>Trend</small>
+
+<strong id="trend">
+—
+</strong>
+
+</div>
+
+
+<div class="indicator">
+
+<small>Candles</small>
+
+<strong id="candles">
+0
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="footer">
+
+<div class="online">
+● Scanner Ready
+</div>
+
+<br>
+
+This is an independent educational technical-analysis
+tool and is not an official Quotex application.
+Signals are not guaranteed and do not guarantee profit.
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   DATA PARSER
+========================= */
+
+function getNumbers(text){
+
+    return text
+    .split(/[,\\s]+/)
+    .map(Number)
+    .filter(Number.isFinite);
+
+}
+
+
+/* =========================
+   EMA
+========================= */
+
+function EMA(data, period){
+
+    if(data.length < period){
+        return null;
+    }
+
+    let multiplier =
+        2 / (period + 1);
+
+    let ema = 0;
+
+    for(let i=0;i<period;i++){
+        ema += data[i];
+    }
+
+    ema /= period;
+
+    for(let i=period;i<data.length;i++){
+
+        ema =
+        (data[i]-ema)
+        * multiplier
+        + ema;
+
+    }
+
+    return ema;
+
+}
+
+
+/* =========================
+   RSI
+========================= */
+
+function RSI(data, period=14){
+
+    if(data.length <= period){
+        return null;
+    }
+
+    let gains=0;
+    let losses=0;
+
+    for(let i=1;i<=period;i++){
+
+        let change =
+        data[i]-data[i-1];
+
+        if(change>0)
+            gains += change;
+
+        else
+            losses -= change;
+
+    }
+
+    let avgGain =
+    gains/period;
+
+    let avgLoss =
+    losses/period;
+
+
+    for(
+        let i=period+1;
+        i<data.length;
+        i++
+    ){
+
+        let change =
+        data[i]-data[i-1];
+
+        let gain =
+        Math.max(change,0);
+
+        let loss =
+        Math.max(-change,0);
+
+        avgGain =
+        ((avgGain*(period-1))+gain)
+        /period;
+
+        avgLoss =
+        ((avgLoss*(period-1))+loss)
+        /period;
+
+    }
+
+
+    if(avgLoss===0)
+        return 100;
+
+
+    let RS =
+    avgGain/avgLoss;
+
+
+    return 100 -
+    (100/(1+RS));
+
+}
+
+
+/* =========================
+   MACD
+========================= */
+
+function MACD(data){
+
+    if(data.length < 35){
+        return null;
+    }
+
+    let ema12 =
+    EMA(data,12);
+
+    let ema26 =
+    EMA(data,26);
+
+    if(
+        ema12===null ||
+        ema26===null
+    ){
+        return null;
+    }
+
+    let macdLine =
+    ema12-ema26;
+
+    return macdLine;
+
+}
+
+
+/* =========================
+   SCANNER
+========================= */
+
+function scanMarket(){
+
+    let data =
+    getNumbers(
+        document.getElementById("prices").value
+    );
+
+
+    let asset =
+    document.getElementById("asset").value;
+
+
+    let timeframe =
+    document.getElementById("timeframe").value;
+
+
+    let expiry =
+    document.getElementById("expiry").value;
+
+
+    document.getElementById("candles")
+    .innerText=data.length;
+
+
+    document.getElementById("signalAsset")
+    .innerText=
+    asset+
+    " • "+
+    timeframe+
+    " sec"+
+    " • Expiry "+
+    expiry;
+
+
+    if(data.length < 35){
+
+        document.getElementById("signal")
+        .innerText="WAIT ⏳";
+
+        document.getElementById("signal")
+        .className="signal-word wait";
+
+        document.getElementById("confidence")
+        .innerText=
+        "At least 35 candle closes required";
+
+        document.getElementById("progress")
+        .style.width="0%";
+
+        return;
+    }
+
+
+    let rsi =
+    RSI(data,14);
+
+    let ema9 =
+    EMA(data,9);
+
+    let ema21 =
+    EMA(data,21);
+
+    let macd =
+    MACD(data);
+
+
+    document.getElementById("rsi")
+    .innerText=rsi.toFixed(2);
+
+    document.getElementById("ema9")
+    .innerText=ema9.toFixed(5);
+
+    document.getElementById("ema21")
+    .innerText=ema21.toFixed(5);
+
+    document.getElementById("macd")
+    .innerText=
+    macd.toFixed(6);
+
+
+    let score=0;
+
+    let reasons=[];
+
+
+    /* EMA */
+
+    if(ema9 > ema21){
+
+        score += 2;
+
+        reasons.push(
+            "EMA bullish"
+        );
+
+    }
+
+    else{
+
+        score -= 2;
+
+        reasons.push(
+            "EMA bearish"
+        );
+
+    }
+
+
+    /* RSI */
+
+    if(
+        rsi > 55 &&
+        rsi < 70
+    ){
+
+        score += 1;
+
+        reasons.push(
+            "RSI bullish"
+        );
+
+    }
+
+    else if(
+        rsi < 45 &&
+        rsi > 30
+    ){
+
+        score -= 1;
+
+        reasons.push(
+            "RSI bearish"
+        );
+
+    }
+
+    else if(rsi >= 70){
+
+        reasons.push(
+            "RSI overbought"
+        );
+
+    }
+
+    else if(rsi <= 30){
+
+        reasons.push(
+            "RSI oversold"
+        );
+
+    }
+
+
+    /* MACD */
+
+    if(macd > 0){
+
+        score += 2;
+
+        reasons.push(
+            "MACD bullish"
+        );
+
+    }
+
+    else{
+
+        score -= 2;
+
+        reasons.push(
+            "MACD bearish"
+        );
+
+    }
+
+
+    /* FINAL SIGNAL */
+
+    let signal=
+    "WAIT ⏳";
+
+    let className=
+    "signal-word wait";
+
+
+    if(score >= 3){
+
+        signal=
+        "UP 📈";
+
+        className=
+        "signal-word up";
+
+    }
+
+    else if(score <= -3){
+
+        signal=
+        "DOWN 📉";
+
+        className=
+        "signal-word down";
+
+    }
+
+
+    let strength =
+    Math.min(
+        95,
+        55 + Math.abs(score)*10
+    );
+
+
+    document.getElementById("signal")
+    .innerText=signal;
+
+    document.getElementById("signal")
+    .className=className;
+
+
+    if(signal==="WAIT ⏳"){
+
+        document.getElementById("confidence")
+        .innerText=
+        "Mixed market conditions";
+
+        document.getElementById("progress")
+        .style.width="35%";
+
+    }
+
+    else{
+
+        document.getElementById("confidence")
+        .innerText=
+        "Signal strength: "+
+        strength+
+        "%";
+
+        document.getElementById("progress")
+        .style.width=
+        strength+"%";
+
+    }
+
+
+    document.getElementById("reason")
+    .innerText=
+    reasons.join(" • ");
+
+
+    document.getElementById("trend")
+    .innerText=
+    ema9>ema21
+    ?"BULLISH 📈"
+    :"BEARISH 📉";
+
+}
+
+
+/* =========================
+   PWA SERVICE WORKER
+========================= */
+
+if(
+    "serviceWorker"
+    in navigator
+){
+
+    window.addEventListener(
+        "load",
+        function(){
+
+            navigator.serviceWorker
+            .register("sw.js")
+            .catch(
+                function(error){
+                    console.log(error);
+                }
+            );
+
+        }
+    );
+
+}
+
+</script>
+
+</body>
+</html>
