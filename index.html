@@ -943,3 +943,520 @@ if(
 
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#070b12">
+<title>QUOTEX VIP SCANNER</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#050810;
+ color:#fff;
+ font-family:Arial,sans-serif;
+}
+.app{
+ max-width:520px;
+ margin:auto;
+ min-height:100vh;
+ padding:16px;
+}
+.header{
+ text-align:center;
+ padding:20px 10px;
+}
+.logo{
+ font-size:28px;
+ font-weight:900;
+ letter-spacing:2px;
+}
+.logo span{color:#00e5ff}
+.sub{
+ color:#8d9aaa;
+ font-size:12px;
+ margin-top:7px;
+}
+.card{
+ background:linear-gradient(145deg,#101722,#080d15);
+ border:1px solid #1c2b3c;
+ border-radius:18px;
+ padding:16px;
+ margin-bottom:14px;
+ box-shadow:0 10px 30px #0008;
+}
+label{
+ display:block;
+ color:#91a1b4;
+ font-size:12px;
+ margin-bottom:7px;
+}
+select,input,textarea{
+ width:100%;
+ background:#060b12;
+ color:white;
+ border:1px solid #26374a;
+ border-radius:11px;
+ padding:13px;
+ outline:none;
+ font-size:14px;
+}
+textarea{
+ min-height:110px;
+ resize:vertical;
+ line-height:1.5;
+}
+.grid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:12px;
+}
+button{
+ width:100%;
+ border:0;
+ border-radius:12px;
+ padding:15px;
+ margin-top:12px;
+ background:linear-gradient(90deg,#00bcd4,#00e5ff);
+ color:#001017;
+ font-weight:900;
+ font-size:15px;
+ cursor:pointer;
+}
+button:active{transform:scale(.98)}
+.signal{
+ text-align:center;
+ padding:24px 10px;
+ border-radius:16px;
+ background:#070c13;
+ border:1px solid #26374a;
+}
+.signal-title{
+ color:#8d9aaa;
+ font-size:12px;
+ letter-spacing:2px;
+}
+.signal-main{
+ font-size:42px;
+ font-weight:900;
+ margin:10px 0;
+}
+.call{color:#00e676}
+.put{color:#ff4569}
+.wait{color:#ffc107}
+.meter{
+ height:10px;
+ background:#17212e;
+ border-radius:20px;
+ overflow:hidden;
+ margin-top:12px;
+}
+.meter div{
+ height:100%;
+ width:0%;
+ transition:.5s;
+ background:#00e5ff;
+}
+.stats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:8px;
+ margin-top:14px;
+}
+.stat{
+ background:#0b121c;
+ border-radius:12px;
+ padding:12px 5px;
+ text-align:center;
+}
+.stat b{display:block;font-size:16px}
+.stat small{color:#7e8c9d;font-size:10px}
+.reason{
+ color:#b9c5d2;
+ font-size:13px;
+ line-height:1.6;
+ margin-top:14px;
+}
+.history{
+ max-height:220px;
+ overflow:auto;
+}
+.row{
+ display:flex;
+ justify-content:space-between;
+ border-bottom:1px solid #182331;
+ padding:11px 2px;
+ font-size:12px;
+}
+.footer{
+ text-align:center;
+ color:#586678;
+ font-size:10px;
+ padding:15px;
+}
+.badge{
+ display:inline-block;
+ padding:5px 9px;
+ border-radius:20px;
+ background:#101d2a;
+ color:#00e5ff;
+ font-size:10px;
+ margin-top:8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="header">
+ <div class="logo">QUOTEX <span>VIP SCANNER</span></div>
+ <div class="sub">Technical Market Analysis • Quotex Only</div>
+ <div class="badge">NO LICENSE KEY REQUIRED</div>
+</div>
+
+<div class="card">
+
+<div class="grid">
+
+<div>
+<label>ASSET</label>
+<select id="asset">
+<option>EUR/USD</option>
+<option>GBP/USD</option>
+<option>USD/JPY</option>
+<option>USD/CHF</option>
+<option>AUD/USD</option>
+<option>USD/CAD</option>
+<option>EUR/GBP</option>
+</select>
+</div>
+
+<div>
+<label>EXPIRY</label>
+<select id="expiry">
+<option>5 Seconds</option>
+<option>15 Seconds</option>
+<option>30 Seconds</option>
+<option>1 Minute</option>
+<option>5 Minutes</option>
+</select>
+</div>
+
+</div>
+
+<br>
+
+<label>RECENT CLOSING PRICES</label>
+
+<textarea id="prices"
+placeholder="Example:
+1.1210
+1.1212
+1.1211
+1.1215
+1.1217
+1.1216
+1.1219
+1.1221
+1.1220
+1.1223"></textarea>
+
+<button onclick="scan()">⚡ SCAN MARKET</button>
+
+</div>
+
+
+<div class="card">
+
+<div class="signal">
+
+<div class="signal-title">SCANNER RESULT</div>
+
+<div id="signal" class="signal-main wait">WAIT</div>
+
+<div id="confidence">Confidence: --</div>
+
+<div class="meter">
+<div id="meter"></div>
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<b id="rsi">--</b>
+<small>RSI 14</small>
+</div>
+
+<div class="stat">
+<b id="ema">--</b>
+<small>EMA 9</small>
+</div>
+
+<div class="stat">
+<b id="trend">--</b>
+<small>TREND</small>
+</div>
+
+</div>
+
+<div class="reason" id="reason">
+Enter recent closing prices and press SCAN MARKET.
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+<label>SIGNAL HISTORY</label>
+<div class="history" id="history">
+<div class="row">
+<span>No signals yet</span>
+<span>--</span>
+</div>
+</div>
+</div>
+
+
+<div class="footer">
+Quotex VIP Scanner • Technical analysis only<br>
+Signals are not guaranteed and should be used with risk management.
+</div>
+
+</div>
+
+
+<script>
+
+function getPrices(){
+
+ let text=document.getElementById("prices").value;
+
+ return text
+ .split(/[\s,;]+/)
+ .map(Number)
+ .filter(x=>Number.isFinite(x));
+
+}
+
+
+function calculateEMA(data, period){
+
+ if(data.length < period) return data[data.length-1];
+
+ let multiplier=2/(period+1);
+
+ let ema=data
+ .slice(0,period)
+ .reduce((a,b)=>a+b,0)/period;
+
+ for(let i=period;i<data.length;i++){
+
+   ema=(data[i]-ema)*multiplier+ema;
+
+ }
+
+ return ema;
+
+}
+
+
+function calculateRSI(data,period=14){
+
+ if(data.length<period+1) return 50;
+
+ let gains=0;
+ let losses=0;
+
+ for(let i=data.length-period;i<data.length;i++){
+
+   let change=data[i]-data[i-1];
+
+   if(change>0) gains+=change;
+   else losses+=Math.abs(change);
+
+ }
+
+ if(losses===0) return 100;
+
+ let rs=(gains/period)/(losses/period);
+
+ return 100-(100/(1+rs));
+
+}
+
+
+function scan(){
+
+ let prices=getPrices();
+
+ if(prices.length<15){
+
+   alert("کم از کم 15 closing prices درج کریں۔");
+
+   return;
+
+ }
+
+ let current=prices[prices.length-1];
+
+ let ema9=calculateEMA(prices,9);
+ let rsi=calculateRSI(prices,14);
+
+ let previous=prices[prices.length-2];
+
+ let momentum=current-previous;
+
+ let trend;
+
+ if(current>ema9) trend="UP";
+ else if(current<ema9) trend="DOWN";
+ else trend="SIDE";
+
+ let scoreCall=0;
+ let scorePut=0;
+
+ /* EMA trend */
+ if(current>ema9) scoreCall+=35;
+ if(current<ema9) scorePut+=35;
+
+ /* RSI */
+ if(rsi>50 && rsi<70) scoreCall+=25;
+ if(rsi<50 && rsi>30) scorePut+=25;
+
+ /* Momentum */
+ if(momentum>0) scoreCall+=20;
+ if(momentum<0) scorePut+=20;
+
+ /* Short price structure */
+ let recent=prices.slice(-5);
+
+ let rising=true;
+ let falling=true;
+
+ for(let i=1;i<recent.length;i++){
+
+   if(recent[i]<=recent[i-1]) rising=false;
+   if(recent[i]>=recent[i-1]) falling=false;
+
+ }
+
+ if(rising) scoreCall+=20;
+ if(falling) scorePut+=20;
+
+
+ let signal="WAIT";
+ let confidence=Math.max(scoreCall,scorePut);
+
+ /*
+  Avoid displaying a strong signal when
+  technical conditions conflict.
+ */
+ if(scoreCall>=70 && scoreCall>scorePut+10){
+
+   signal="CALL";
+
+ }else if(scorePut>=70 && scorePut>scoreCall+10){
+
+   signal="PUT";
+
+ }else{
+
+   signal="WAIT";
+   confidence=Math.max(scoreCall,scorePut);
+
+ }
+
+
+ /* Display */
+
+ let signalEl=document.getElementById("signal");
+
+ signalEl.textContent=signal;
+ signalEl.className="signal-main "+(
+   signal==="CALL" ? "call" :
+   signal==="PUT" ? "put" : "wait"
+ );
+
+ document.getElementById("confidence").textContent=
+ "Confidence: "+Math.round(confidence)+"%";
+
+ document.getElementById("meter").style.width=
+ Math.min(confidence,100)+"%";
+
+ document.getElementById("rsi").textContent=
+ rsi.toFixed(1);
+
+ document.getElementById("ema").textContent=
+ ema9.toFixed(5);
+
+ document.getElementById("trend").textContent=
+ trend;
+
+
+ let explanation="";
+
+ if(signal==="CALL"){
+
+ explanation=
+ "Bullish conditions detected. Price is above EMA, momentum is positive and RSI supports upward pressure. CALL is the technical direction, not a guaranteed outcome.";
+
+ }else if(signal==="PUT"){
+
+ explanation=
+ "Bearish conditions detected. Price is below EMA, momentum is negative and RSI supports downward pressure. PUT is the technical direction, not a guaranteed outcome.";
+
+ }else{
+
+ explanation=
+ "Market conditions are mixed or weak. EMA, RSI and momentum do not agree strongly enough. WAIT is safer than forcing a signal.";
+
+ }
+
+ document.getElementById("reason").textContent=explanation;
+
+
+ addHistory(signal,confidence);
+
+}
+
+
+function addHistory(signal,confidence){
+
+ let history=document.getElementById("history");
+
+ if(history.innerText.includes("No signals yet")){
+
+   history.innerHTML="";
+
+ }
+
+ let time=new Date().toLocaleTimeString();
+
+ let row=document.createElement("div");
+
+ row.className="row";
+
+ row.innerHTML=
+ "<span>"+document.getElementById("asset").value+
+ " • "+document.getElementById("expiry").value+
+ "</span>"+
+ "<span>"+signal+" • "+Math.round(confidence)+"%"+
+ " • "+time+"</span>";
+
+ history.prepend(row);
+
+}
+
+
+</script>
+
+</body>
+</html>
